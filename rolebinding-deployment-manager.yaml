@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: zeppelin-deployment-binding
+  namespace: default  # Namespace mà bạn triển khai Deployment
+subjects:
+- kind: ServiceAccount
+  name: zeppelin-sa  # Hoặc tên service account mà bạn sử dụng
+  namespace: default
+roleRef:
+  kind: Role
+  name: zeppelin-deployment-manager
+  apiGroup: rbac.authorization.k8s.io
