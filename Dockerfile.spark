@@ -1,0 +1,25 @@
+from apache/spark:3.3.3-scala2.12-java11-python3-ubuntu
+ADD ./ojdbc8-23.2.0.0.jar /opt/spark/jars/
+ADD ./aws-java-sdk-bundle-1.12.262.jar /opt/spark/jars/
+ADD ./hadoop-aws-3.3.4.jar /opt/spark/jars/
+ADD ./hadoop-common-3.3.4.jar /opt/spark/jars/
+ADD ./delta-core_2.12-2.3.0.jar /opt/spark/jars/
+ADD ./delta-storage-2.3.0.jar /opt/spark/jars/
+ADD ./kafka-stream/* /opt/spark/jars/
+ADD ./commons-net-3.11.1.jar /opt/spark/jars/
+ADD ./jsch-0.1.55.jar /opt/spark/jars/
+ADD ./config-1.4.2.jar /opt/spark/jars/
+ADD ./scopt_2.12-4.0.1.jar /opt/spark/jars/
+ADD ./khai-thac1.jar /opt/spark/jars/
+USER root
+RUN pip3 install delta && python3 -m pip install cx_Oracle --upgrade && mkdir -p /opt/spark/work-dir/instantclient && apt update &&  apt-get install libaio1 -y && rm -rf /var/lib/apt/lists/* && \
+    apt-get autoclean && \
+    apt-get clean
+COPY ./instantclient_12_2/* /opt/spark/work-dir/instantclient/
+RUN chmod 755 -R /opt/spark/work-dir/instantclient
+
+RUN mkdir -p /etc/ld.so.conf.d/ && echo "/opt/spark/work-dir/instantclient" >> /etc/ld.so.conf.d/oracle-instantclient.conf && ldconfig
+ENV ORACLE_HOME=/opt/spark/work-dir/instantclient
+
+
+USER spark
