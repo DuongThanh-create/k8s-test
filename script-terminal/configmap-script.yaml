@@ -1,0 +1,46 @@
+# Source: rancher/templates/post-delete-hook-config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: delete-validate-rancher
+  namespace: cattle-system
+  labels: 
+    app: rancher-script-delete
+data:
+  script-delete-validate.sh: |-
+    #!/bin/bash
+    
+    echo "Duong Van Thanh --- Start"
+    
+    succeeded=()
+    failed=()
+
+    output=$(kubectl get pods -n cattle-system)
+    echo "$output"
+    
+    if [[ ! $(kubectl get pods -n cattle-system) ]]; then
+        echo "Failed to uninstall the following apps:" "${failed[@]}"
+        failed=("${failed[@]}" "${app}")
+        continue
+    else
+        succeeded=("${succeeded[@]}" "${app}")
+        echo "succeeded to uninstall the following apps:" "${succeeded[@]}"
+    fi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-boot-config
+  namespace: cattle-system
+data:
+  SPRING_PROFILES_ACTIVE: "test"
+  SPRING_APPLICATION_NAME: "base-demo"
+  SPRING_TERMINAL_COMMAND: "bash"
+  SPRING_TERMINAL_OPTION: "-c"
+  SPRING_TERMINAL_SCRIPT: "./scripts/script-delete-validate.sh"
+  SPRING_TERMINAL_CLOSE: "true"
+  SPRING_TERMINAL_START: "0 */3 * * * *"     
+  SPRING_TERMINAL_TEST: "Duong thanh test" 
+
+    
+    
