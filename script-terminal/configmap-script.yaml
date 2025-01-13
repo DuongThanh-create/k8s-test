@@ -39,8 +39,9 @@ data:
   SPRING_TERMINAL_OPTION: "-c"
   SPRING_TERMINAL_SCRIPT: "./scripts/script-delete-validate.sh"
   SPRING_TERMINAL_CLOSE: "true"
-  SPRING_TERMINAL_START: "0 */3 * * * *"     
+  SPRING_TERMINAL_SCHEDULED_CRON: "0 */4 * * * *"     
   SPRING_TERMINAL_TEST: "Duong thanh test" 
+  SPRING_TERMINAL_SCHEDULED_FIXEDRATESTRING: "180000"
 
     
     
